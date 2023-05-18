@@ -14,6 +14,7 @@ logging.basicConfig(
 )
 
 def main():
+    """Start the bot."""
     # Create the application and pass it the authentication token
     application = ApplicationBuilder().token(token).build()
 
