@@ -1,6 +1,6 @@
 import os, logging
 from dotenv import load_dotenv
-from telegram import Updates
+from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, ContextTypes, filters
 
 # Get bot authentication token from environment
