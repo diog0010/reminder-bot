@@ -14,7 +14,11 @@ logging.basicConfig(
 )
 
 def main():
-    return 0
+    # Create the application and pass it the authentication token
+    application = ApplicationBuilder().token(token).build()
+
+    # Run the bot until user presses Ctrl+C
+    application.run_polling()
 
 if __name__ == '__main__':
     main()
