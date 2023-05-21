@@ -20,11 +20,13 @@ def main() -> None:
     # Intialize handlers
     start_handler = CommandHandler('start', bot.start)
     help_handler = CommandHandler('help', bot.help)
-    unknown_handler = CommandHandler(filters.COMMAND, bot.unknown)
 
     # Register application handlers
     application.add_handler(start_handler)
     application.add_handler(help_handler)
+
+    # Notify users of invalid command entry
+    unknown_handler = MessageHandler(filters.COMMAND, bot.unknown)
     application.add_handler(unknown_handler)
 
     # Run the bot until user presses Ctrl+C
