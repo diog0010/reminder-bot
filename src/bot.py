@@ -10,3 +10,15 @@ async def start(update: Update, context: ContextTypes) -> None:
               "Use /help to see a list of commands.",
         parse_mode='HTML'
     )
+
+async def help(update: Update, context:ContextTypes) -> None:
+    """Display a list of commands."""
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="<b>Available Commands</b>\n"
+             "/new - Create a new task\n"
+             "/list - List all current tasks\n"
+             "/edit - Edit a task\n"
+             "/delete - Delete a task\n",
+        parse_mode='HTML'
+    )
