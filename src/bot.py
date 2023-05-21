@@ -23,6 +23,15 @@ async def help(update: Update, context:ContextTypes) -> None:
         parse_mode='HTML'
     )
 
+async def new_reminder(update: Update, context:ContextTypes) -> None:
+    """Create a new reminder."""
+
+async def edit_reminder(update: Update, context:ContextTypes) -> None:
+    """Edit an existing reminder."""
+
+async def delete_reminder(update: Update, context:ContextTypes) -> None:
+    """Delete an existing reminder."""
+
 async def unknown(update: Update, context:ContextTypes) -> None:
     """Display unknown command error message."""
     await context.bot.send_message(
