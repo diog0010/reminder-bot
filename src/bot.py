@@ -22,3 +22,11 @@ async def help(update: Update, context:ContextTypes) -> None:
              "/delete - Delete a task\n",
         parse_mode='HTML'
     )
+
+async def unknown(update: Update, context:ContextTypes) -> None:
+    """Display unknown command error message."""
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Sorry, I don't understand that command.\n\n"
+             "Use /help to see a list of available commands."
+    )
