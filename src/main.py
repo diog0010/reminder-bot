@@ -17,7 +17,7 @@ def main() -> None:
     # Create the application and pass it the authentication token
     application = ApplicationBuilder().token(token).build()
 
-    # Intialize handlers
+    # Initialize handlers
     start_handler = CommandHandler('start', bot.start)
     help_handler = CommandHandler('help', bot.help)
 
