@@ -69,7 +69,7 @@ async def interval(update: Update, context: ContextTypes) -> int:
     context.user_data['interval'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="When would you like to stop receiving reminders about this task? Enter /skip if you would like the reminder to reoccur."
+        text="When would you like to stop receiving reminders about this task?"
     )
     return END_DATETIME
 
