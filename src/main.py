@@ -20,6 +20,7 @@ def main() -> None:
     # Initialize command handlers
     start_handler = CommandHandler('start', bot.start)
     help_handler = CommandHandler('help', bot.help)
+    list_handler = CommandHandler('list', bot.list_tasks)
 
     # Initialize conversation handlers
     new_task_handler = ConversationHandler(
@@ -37,6 +38,7 @@ def main() -> None:
     # Register application handlers
     application.add_handler(start_handler)
     application.add_handler(help_handler)
+    application.add_handler(list_handler)
     application.add_handler(new_task_handler)
 
     # Notify users of invalid command entry

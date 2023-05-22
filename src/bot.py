@@ -91,8 +91,9 @@ async def confirm(update: Update, context: ContextTypes) -> int:
     context.job_queue.run_repeating(
         remind, 
         5, 
-        last=15, 
-        name=context.user_data['task'], 
+        last=15,
+        data=context.user_data['task'],
+        name=update.message.from_user.id, 
         chat_id=update.effective_chat.id,
         user_id=update.message.from_user.id
     )
@@ -116,6 +117,23 @@ async def edit_task(update: Update, context: ContextTypes) -> None:
 
 async def delete_task(update: Update, context: ContextTypes) -> None:
     """Delete an existing task."""
+
+async def list_tasks(update: Update, context: ContextTypes) -> None:
+    """Display a user's tasks."""
+    tasks = ""
+    user_id = update.message.from_user.id
+
+    for i, job in enumerate(context.job_queue.get_jobs_by_name(user_id)):
+        tasks += f"{i+1}. {job.data}\n"
+        i += 1
+    
+    if tasks == "":
+        tasks = "No active tasks"
+
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=f"Active tasks:\n{tasks}"
+    )
 
 async def unknown(update: Update, context: ContextTypes) -> None:
     """Display unknown command error message."""
