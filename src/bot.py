@@ -27,7 +27,7 @@ async def help(update: Update, context: ContextTypes) -> None:
 
 async def remind(context: ContextTypes) -> None:
     """Send a reminder message."""
-    await context.bot.send_message(chat_id=context.job.chat_id, text=f"TASK: {context.job.data}")
+    await context.bot.send_message(chat_id=context.job.chat_id, text=f"TASK: {context.user_data['task']}")
 
 async def new_task(update: Update, context: ContextTypes) -> int:
     """Create a new task."""
