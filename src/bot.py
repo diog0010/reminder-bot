@@ -69,7 +69,7 @@ async def interval(update: Update, context: ContextTypes) -> int:
     context.user_data['interval'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="How often do you want to receive a reminder for this task?"
+        text="When would you like to stop receiving reminders about this task? Enter /skip if you would like the reminder to reoccur."
     )
     return END_DATETIME
 
@@ -78,7 +78,11 @@ async def end_datetime(update: Update, context: ContextTypes) -> int:
     context.user_data['end_datetime'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="How often do you want to receive a reminder for this task?"
+        text=f"Task: {context.user_data['task']}\n"
+             f"Notes: {context.user_data['notes']}\n"
+             f"Interval: {context.user_data['interval']}\n"
+             f"End: {context.user_data['end_datetime']}\n"
+              "Enter /confirm to start receiving reminders about this task. Otherwise, enter /cancel."
     )
     return CONFIRM
 
