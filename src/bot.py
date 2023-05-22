@@ -1,6 +1,8 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 
+TITLE, DESCRIPTION, INTERVAL, END_DATETIME = range(4)
+
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
     await context.bot.send_message(
