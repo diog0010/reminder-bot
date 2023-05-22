@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-TASK, NOTES, INTERVAL, END_DATETIME, CONFIRM = range(4)
+TASK, NOTES, INTERVAL, END_DATETIME, CONFIRM = range(5)
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
