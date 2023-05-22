@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-TASK, NOTES, INTERVAL, END_DATETIME = range(4)
+TASK, NOTES, INTERVAL, END_DATETIME, CONFIRM = range(4)
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
@@ -72,6 +72,15 @@ async def interval(update: Update, context: ContextTypes) -> int:
         text="How often do you want to receive a reminder for this task?"
     )
     return END_DATETIME
+
+async def end_datetime(update: Update, context: ContextTypes) -> int:
+    """Store reminder end datetime and ask user to confirm conversation input."""
+    context.user_data['notes'] = update.message.text
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="How often do you want to receive a reminder for this task?"
+    )
+    return CONFIRM
 
 async def cancel(update: Update, context: ContextTypes) -> int:
     """End a conversation early."""
