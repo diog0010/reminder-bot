@@ -64,6 +64,15 @@ async def skip_notes(update: Update, context: ContextTypes) -> int:
     )
     return INTERVAL
 
+async def interval(update: Update, context: ContextTypes) -> int:
+    """Store reminder interval and prompt reminder end datetime input."""
+    context.user_data['notes'] = update.message.text
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="How often do you want to receive a reminder for this task?"
+    )
+    return END_DATETIME
+
 async def cancel(update: Update, context: ContextTypes) -> int:
     """End a conversation early."""
 
