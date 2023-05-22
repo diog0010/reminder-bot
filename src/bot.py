@@ -1,5 +1,5 @@
 from telegram import Update
-from telegram.ext import ContextTypes
+from telegram.ext import ContextTypes, ConversationHandler
 
 TITLE, DESCRIPTION, INTERVAL, END_DATETIME = range(4)
 
@@ -40,8 +40,12 @@ async def new_reminder(update: Update, context: ContextTypes) -> int:
 async def title(update: Update, context: ContextTypes) -> int:
     """Store info about reminder title."""
 
+    return ConversationHandler.END
+
 async def cancel(update: Update, context: ContextTypes) -> int:
     """End a conversation early."""
+
+    return ConversationHandler.END
 
 async def edit_reminder(update: Update, context: ContextTypes) -> None:
     """Edit an existing reminder."""
