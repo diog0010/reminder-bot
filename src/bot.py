@@ -93,7 +93,7 @@ async def confirm(update: Update, context: ContextTypes) -> int:
         5, 
         last=15,
         data=context.user_data['task'],
-        name=update.message.from_user.id, 
+        name=str(update.message.from_user.id), 
         chat_id=update.effective_chat.id,
         user_id=update.message.from_user.id
     )
@@ -121,7 +121,7 @@ async def delete_task(update: Update, context: ContextTypes) -> None:
 async def list_tasks(update: Update, context: ContextTypes) -> None:
     """Display a user's tasks."""
     tasks = ""
-    user_id = update.message.from_user.id
+    user_id = str(update.message.from_user.id)
 
     for i, job in enumerate(context.job_queue.get_jobs_by_name(user_id)):
         tasks += f"{i+1}. {job.data}\n"
