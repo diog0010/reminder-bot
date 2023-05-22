@@ -38,11 +38,13 @@ async def new_task(update: Update, context: ContextTypes) -> int:
     return TASK
 
 async def task(update: Update, context: ContextTypes) -> int:
-    """Store task name."""
-    chat_id = update.message.chat_id
-    task = update.message.text
-    context.job_queue.run_once(remind, 10, data=task, chat_id=chat_id)
-    return ConversationHandler.END
+    """Store task name and prompt additional notes input."""
+    context.user_data['task'] = update.message.text
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Are there any additional notes you would like me to include in the reminder? Enter /skip to skip this step."
+    )
+    return NOTES
 
 async def cancel(update: Update, context: ContextTypes) -> int:
     """End a conversation early."""
