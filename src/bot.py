@@ -31,6 +31,9 @@ async def help(update: Update, context:ContextTypes) -> None:
         parse_mode='HTML'
     )
 
+async def remind(context:ContextTypes) -> None:
+    """Send a reminder message."""
+
 async def new_reminder(update: Update, context:ContextTypes) -> None:
     """Create a new reminder."""
 
