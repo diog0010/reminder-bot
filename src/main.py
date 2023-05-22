@@ -26,7 +26,10 @@ def main() -> None:
         entry_points=[CommandHandler('new', bot.new_task)],
         states={
             bot.TASK: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.task)],
-            bot.NOTES: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.task), CommandHandler('skip', bot.skip_notes)]
+            bot.NOTES: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.notes), CommandHandler('skip', bot.skip_notes)],
+            bot.INTERVAL: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.interval)], # FIX THIS
+            bot.END_DATETIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.end_datetime)], # FIX THIS
+            bot.CONFIRM: [CommandHandler('confirm', bot.confirm)]
         },
         fallbacks=[CommandHandler('cancel', bot.cancel)]
     )
