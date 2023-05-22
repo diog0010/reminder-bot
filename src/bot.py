@@ -88,7 +88,7 @@ async def end_datetime(update: Update, context: ContextTypes) -> int:
 
 async def confirm(update: Update, context: ContextTypes) -> int:
     """Add reminder to job queue and end the conversation"""
-    context.user_data['interval'] = update.message.text
+    context.job_queue.run_custom(remind, name=context.user_data['task'], user_id=update.message.from_user.id)
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Task entry confirmed. You will now start receiving reminders for the following task\n\n"
