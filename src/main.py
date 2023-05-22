@@ -22,8 +22,8 @@ def main() -> None:
     help_handler = CommandHandler('help', bot.help)
 
     # Initialize conversation handlers
-    new_reminder_handler = ConversationHandler(
-        entry_points=[CommandHandler('new', bot.new_reminder)],
+    new_task_handler = ConversationHandler(
+        entry_points=[CommandHandler('new', bot.new_task)],
         states={
             bot.TITLE: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.title)]
         },
@@ -33,7 +33,7 @@ def main() -> None:
     # Register application handlers
     application.add_handler(start_handler)
     application.add_handler(help_handler)
-    application.add_handler(new_reminder_handler)
+    application.add_handler(new_task_handler)
 
     # Notify users of invalid command entry
     unknown_handler = MessageHandler(filters.COMMAND, bot.unknown)

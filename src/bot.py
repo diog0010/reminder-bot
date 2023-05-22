@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-TITLE, DESCRIPTION, INTERVAL, END_DATETIME = range(4)
+TASK, MESSAGE, INTERVAL, END_DATETIME = range(4)
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
@@ -27,21 +27,21 @@ async def help(update: Update, context: ContextTypes) -> None:
 
 async def remind(context: ContextTypes) -> None:
     """Send a reminder message."""
-    await context.bot.send_message(chat_id=context.job.chat_id, text=f"REMINDER TITLE: {context.job.data}")
+    await context.bot.send_message(chat_id=context.job.chat_id, text=f"TASK: {context.job.data}")
 
-async def new_reminder(update: Update, context: ContextTypes) -> int:
-    """Create a new reminder."""
+async def new_task(update: Update, context: ContextTypes) -> int:
+    """Create a new task."""
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="How would you like to title the reminder?"
+        text="What task would you like to be reminded about?"
     )
-    return TITLE
+    return TASK
 
-async def title(update: Update, context: ContextTypes) -> int:
-    """Store info about reminder title."""
+async def task(update: Update, context: ContextTypes) -> int:
+    """Store task name."""
     chat_id = update.message.chat_id
-    title = update.message.text
-    context.job_queue.run_once(remind, 10, data=title, chat_id=chat_id)
+    task = update.message.text
+    context.job_queue.run_once(remind, 10, data=task, chat_id=chat_id)
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes) -> int:
@@ -49,11 +49,11 @@ async def cancel(update: Update, context: ContextTypes) -> int:
 
     return ConversationHandler.END
 
-async def edit_reminder(update: Update, context: ContextTypes) -> None:
-    """Edit an existing reminder."""
+async def edit_task(update: Update, context: ContextTypes) -> None:
+    """Edit an existing task."""
 
-async def delete_reminder(update: Update, context: ContextTypes) -> None:
-    """Delete an existing reminder."""
+async def delete_task(update: Update, context: ContextTypes) -> None:
+    """Delete an existing task."""
 
 async def unknown(update: Update, context: ContextTypes) -> None:
     """Display unknown command error message."""
