@@ -25,7 +25,7 @@ def main() -> None:
     new_task_handler = ConversationHandler(
         entry_points=[CommandHandler('new', bot.new_task)],
         states={
-            bot.TITLE: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.title)]
+            bot.TASK: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.task)]
         },
         fallbacks=[CommandHandler('cancel', bot.cancel)]
     )
