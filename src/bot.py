@@ -27,6 +27,7 @@ async def help(update: Update, context: ContextTypes) -> None:
 
 async def remind(context: ContextTypes) -> None:
     """Send a reminder message."""
+    await context.bot.send_message(chat_id=context.job.chat_id, text=f"REMINDER TITLE: {context.job.data}")
 
 async def new_reminder(update: Update, context: ContextTypes) -> int:
     """Create a new reminder."""
@@ -39,7 +40,9 @@ async def new_reminder(update: Update, context: ContextTypes) -> int:
 
 async def title(update: Update, context: ContextTypes) -> int:
     """Store info about reminder title."""
-
+    chat_id = update.message.chat_id
+    title = update.message.text
+    context.job_queue.run_once(remind, 10, data=title, chat_id=chat_id)
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes) -> int:
