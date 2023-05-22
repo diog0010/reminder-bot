@@ -26,13 +26,17 @@ async def help(update: Update, context: ContextTypes) -> None:
 async def remind(context: ContextTypes) -> None:
     """Send a reminder message."""
 
-async def new_reminder(update: Update, context: ContextTypes) -> None:
+async def new_reminder(update: Update, context: ContextTypes) -> int:
     """Create a new reminder."""
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="How would you like to title the reminder?"
+    )
 
-async def title(update: Update, context: ContextTypes) -> None:
+async def title(update: Update, context: ContextTypes) -> int:
     """Store info about reminder title."""
 
-async def cancel(update: Update, context: ContextTypes) -> None:
+async def cancel(update: Update, context: ContextTypes) -> int:
     """End a conversation early."""
 
 async def edit_reminder(update: Update, context: ContextTypes) -> None:
