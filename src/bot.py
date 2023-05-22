@@ -29,6 +29,12 @@ async def remind(context: ContextTypes) -> None:
 async def new_reminder(update: Update, context: ContextTypes) -> None:
     """Create a new reminder."""
 
+async def title(update: Update, context: ContextTypes) -> None:
+    """Store info about reminder title."""
+
+async def cancel(update: Update, context: ContextTypes) -> None:
+    """End a conversation early."""
+
 async def edit_reminder(update: Update, context: ContextTypes) -> None:
     """Edit an existing reminder."""
 
