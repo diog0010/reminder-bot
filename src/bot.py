@@ -1,6 +1,14 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 
+class Reminder:
+    """A class representing a reminder"""
+    def __init__(self, title, description, interval, end):
+        self.title = title
+        self.description = description
+        self.interval = interval
+        self.end = end
+
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
     await context.bot.send_message(
