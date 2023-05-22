@@ -35,6 +35,8 @@ async def new_reminder(update: Update, context: ContextTypes) -> int:
         text="How would you like to title the reminder?"
     )
 
+    return TITLE
+
 async def title(update: Update, context: ContextTypes) -> int:
     """Store info about reminder title."""
 
