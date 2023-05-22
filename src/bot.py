@@ -98,7 +98,10 @@ async def confirm(update: Update, context: ContextTypes) -> int:
 
 async def cancel(update: Update, context: ContextTypes) -> int:
     """End a conversation early."""
-
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Ending conversation..."
+    )
     return ConversationHandler.END
 
 async def edit_task(update: Update, context: ContextTypes) -> None:
