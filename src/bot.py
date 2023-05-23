@@ -29,7 +29,7 @@ async def remind(context: ContextTypes) -> None:
     """Send a reminder message."""
     await context.bot.send_message(
         chat_id=context.job.chat_id, 
-        text=f"This is a reminder for you to care of the following task:\n\n"
+        text=f"This is a message to remind you of the following task:\n\n"
              f"<b>{context.user_data['task']}</b>\n"
              f"<i>{context.user_data['notes']}</i>\n\n"
              f"Don't forget!",
