@@ -64,7 +64,7 @@ async def notes(update: Update, context: ContextTypes) -> int:
 
 async def skip_notes(update: Update, context: ContextTypes) -> int:
     """Skip adding additional task notes."""
-    context.user_data['notes'] = None
+    context.user_data['notes'] = "No additional notes."
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="How often do you want to receive a reminder for this task?"
