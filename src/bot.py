@@ -109,8 +109,7 @@ async def confirm(update: Update, context: ContextTypes) -> int:
         last=15,
         data=reminder,
         name=str(update.message.from_user.id), 
-        chat_id=update.effective_chat.id,
-        user_id=update.message.from_user.id
+        chat_id=update.effective_chat.id
     )
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
