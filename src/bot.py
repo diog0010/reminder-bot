@@ -102,7 +102,7 @@ async def skip_notes(update: Update, context: ContextTypes) -> int:
 async def interval(update: Update, context: ContextTypes) -> int:
     """Store reminder interval and prompt reminder start datetime input."""
     query = update.callback_query
-    context.user_data['interval'] = update.query.data
+    context.user_data['interval'] = query.data
 
     await query.answer()
 
