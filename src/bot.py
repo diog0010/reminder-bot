@@ -2,7 +2,7 @@ from datetime import time, timedelta
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
-TASK, NOTES, INTERVAL, START, END, CONFIRM = range(6)
+TASK, NOTES, INTERVAL, CUSTOM_INTERVAL, START, END, CONFIRM = range(6)
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
@@ -107,6 +107,23 @@ async def interval(update: Update, context: ContextTypes) -> int:
 
     await query.answer()
 
+    if query.data == "custom":
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Enter your preferred interval between reminders for this task using 24 hour notation (i.e. hh:mm:ss)."
+        )
+        return CUSTOM_INTERVAL
+
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="When would you like to start receiving reminders about this task?\n\n" 
+             "Please use 24 hour notation (i.e. hh:mm:ss)"
+    )
+    return START
+
+async def custom_interval(update: Update, context: ContextTypes) -> int:
+    """Store custom reminder interval and prompt reminder start datetime input."""
+    context.user_data['interval'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="When would you like to start receiving reminders about this task?\n\n" 
@@ -165,8 +182,11 @@ async def confirm(update: Update, context: ContextTypes) -> int:
         case "monthly":
             interval = timedelta(weeks=4)
         case _:
-            interval = timedelta(seconds=10) # TEMPORARY
+            interval_hours = int(context.user_data['interval'][:2])
+            interval_minutes = int(context.user_data['interval'][3:5])
+            interval_seconds = int(context.user_data['interval'][6:])
 
+            interval = timedelta(hours=interval_hours, minutes=interval_minutes, seconds=interval_seconds)
 
     context.job_queue.run_repeating(
         remind, 
