@@ -1,6 +1,6 @@
 import os, logging, bot
 from dotenv import load_dotenv
-from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, ConversationHandler, filters
+from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, ConversationHandler, filters, CallbackQueryHandler
 
 # Get bot authentication token from environment
 load_dotenv()
@@ -28,7 +28,7 @@ def main() -> None:
         states={
             bot.TASK: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.task)],
             bot.NOTES: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.notes), CommandHandler('skip', bot.skip_notes)],
-            bot.INTERVAL: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.interval)], # FIX THIS
+            bot.INTERVAL: [CallbackQueryHandler(bot.interval)], # FIX THIS
             bot.END_DATETIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.end_datetime)], # FIX THIS
             bot.CONFIRM: [CommandHandler('confirm', bot.confirm)]
         },

@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
 TASK, NOTES, INTERVAL, END_DATETIME, CONFIRM = range(5)
@@ -57,18 +57,45 @@ async def task(update: Update, context: ContextTypes) -> int:
 async def notes(update: Update, context: ContextTypes) -> int:
     """Store additional notes and prompt reminder interval input."""
     context.user_data['notes'] = update.message.text
+    keyboard = [
+        [
+            InlineKeyboardButton("Hourly", callback_data="hourly"),
+            InlineKeyboardButton("Daily", callback_data="daily"),
+        ],
+        [
+            InlineKeyboardButton("Weekly", callback_data="weekly"),
+            InlineKeyboardButton("Monthly", callback_data="monthly"),
+        ],
+        [InlineKeyboardButton("Custom", callback_data="custom")]
+    ]
+
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="How often do you want to receive a reminder for this task?"
+        text="How often do you want to receive a reminder for this task?",
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
     return INTERVAL
 
 async def skip_notes(update: Update, context: ContextTypes) -> int:
     """Skip adding additional task notes."""
     context.user_data['notes'] = "No additional notes."
+
+    keyboard = [
+        [
+            InlineKeyboardButton("Hourly", callback_data="hourly"),
+            InlineKeyboardButton("Daily", callback_data="daily"),
+        ],
+        [
+            InlineKeyboardButton("Weekly", callback_data="weekly"),
+            InlineKeyboardButton("Monthly", callback_data="monthly"),
+        ],
+        [InlineKeyboardButton("Custom", callback_data="custom")]
+    ]
+
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="How often do you want to receive a reminder for this task?"
+        text="How often do you want to receive a reminder for this task?",
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
     return INTERVAL
 
