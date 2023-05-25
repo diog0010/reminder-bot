@@ -126,7 +126,7 @@ async def end_datetime(update: Update, context: ContextTypes) -> int:
              f"Task: {context.user_data['task']}\n"
              f"Notes: {context.user_data['notes']}\n"
              f"Interval: {context.user_data['interval']}\n"
-             f"Interval: {context.user_data['start_datetime']}\n"
+             f"Start: {context.user_data['start_datetime']}\n"
              f"End: {context.user_data['end_datetime']}\n\n"
               "Enter /confirm to start receiving reminders about this task. Otherwise, enter /cancel."
     )
