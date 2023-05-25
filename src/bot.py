@@ -1,4 +1,4 @@
-from datetime import time, timedelta
+from datetime import time, timedelta, datetime
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -205,11 +205,14 @@ async def confirm(update: Update, context: ContextTypes) -> int:
 
     start = parse_time_notation(reminder['start'])
 
+    end_format = "%d/%m/%y %H:%M:S"
+    end = datetime.strptime(reminder['end'], end_format)
+
     context.job_queue.run_repeating(
         remind, 
         interval,
         first=time(hour=start[2], minute=start[1], second=start[0]),
-        last=None,
+        last=end,
         data=reminder,
         name=str(update.message.from_user.id), 
         chat_id=update.effective_chat.id
