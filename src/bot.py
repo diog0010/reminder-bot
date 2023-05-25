@@ -25,7 +25,6 @@ async def help(update: Update, context: ContextTypes) -> None:
         text="<b>Available Commands</b>\n"
              "/new - Create a new task\n"
              "/list - List all current tasks\n"
-             "/edit - Edit a task\n"
              "/delete - Delete a task\n",
         parse_mode='HTML'
     )
@@ -218,8 +217,7 @@ async def confirm(update: Update, context: ContextTypes) -> int:
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="You will now start receiving reminders for the following task:\n\n"
-             f"<b>{context.user_data['task']}</b>\n\n"
-             "Edit this task at anytime using the /edit command.",
+             f"<b>{context.user_data['task']}</b>",
         parse_mode='HTML'
     )
     return ConversationHandler.END
@@ -231,9 +229,6 @@ async def cancel(update: Update, context: ContextTypes) -> int:
         text="Ending conversation..."
     )
     return ConversationHandler.END
-
-async def edit_task(update: Update, context: ContextTypes) -> None:
-    """Edit an existing task."""
 
 async def delete_task(update: Update, context: ContextTypes) -> int:
     """List all active tasks and prompt user to select task to be deleted."""
