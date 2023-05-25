@@ -1,7 +1,7 @@
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
-TASK, NOTES, INTERVAL, END_DATETIME, CONFIRM = range(5)
+TASK, NOTES, INTERVAL, START_DATETIME, END_DATETIME, CONFIRM = range(6)
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
@@ -100,8 +100,17 @@ async def skip_notes(update: Update, context: ContextTypes) -> int:
     return INTERVAL
 
 async def interval(update: Update, context: ContextTypes) -> int:
-    """Store reminder interval and prompt reminder end datetime input."""
+    """Store reminder interval and prompt reminder start datetime input."""
     context.user_data['interval'] = update.message.text
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="When would you like to start receiving reminders about this task?"
+    )
+    return START_DATETIME
+
+async def start_datetime(update: Update, context: ContextTypes) -> int:
+    """Store reminder start datetime and prompt reminder end datetime input."""
+    context.user_data['start_datetime'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="When would you like to stop receiving reminders about this task?"
@@ -117,6 +126,7 @@ async def end_datetime(update: Update, context: ContextTypes) -> int:
              f"Task: {context.user_data['task']}\n"
              f"Notes: {context.user_data['notes']}\n"
              f"Interval: {context.user_data['interval']}\n"
+             f"Interval: {context.user_data['start_datetime']}\n"
              f"End: {context.user_data['end_datetime']}\n\n"
               "Enter /confirm to start receiving reminders about this task. Otherwise, enter /cancel."
     )
@@ -128,6 +138,7 @@ async def confirm(update: Update, context: ContextTypes) -> int:
         "task": context.user_data['task'],
         "notes": context.user_data['notes'],
         "interval": context.user_data['interval'],
+        "start_datetime": context.user_data['start_datetime'],
         "end_datetime": context.user_data['end_datetime'],
     }
     context.job_queue.run_repeating(
