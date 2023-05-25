@@ -31,17 +31,18 @@ def main() -> None:
             bot.TASK: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.task)],
             bot.NOTES: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.notes), CommandHandler('skip', bot.skip_notes)],
             bot.INTERVAL: [CallbackQueryHandler(bot.interval)],
-            bot.CUSTOM_INTERVAL: [MessageHandler(filters.Regex('^([0-9][0-9][0-9]:([0-1][0-9])|(2[0-3]):[0-5][0-9]:[0-5][0-9])|'
-                                                               '^(([0-1][0-9])|(2[0-4]):[0-5][0-9]:[0-5][0-9])|'
+            bot.CUSTOM_INTERVAL: [MessageHandler(filters.Regex('^([0-9][0-9][0-9]:([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9])|'
+                                                               '^(([0-1][0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9])|'
                                                                '^([0-5][0-9]:[0-5][0-9])|'
                                                                '^([0-9]:[0-5][0-9])|'
                                                                '^([0-5][0-9])|'
                                                                '^([0-9])'), bot.custom_interval)],
             bot.START: [MessageHandler(filters.Regex('^(([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9])'), bot.start_time)],
-            bot.END: [MessageHandler(filters.Regex('^([0-9][0-9][0-9][0-9]/(0[0-9])|(1[0-2])/([0-2][0-9])|(3[0-1])'), bot.end_time)],
+            bot.END: [MessageHandler(filters.Regex('^([0-9][0-9][0-9][0-9]/(0[0-9]|1[0-2])/([0-2][0-9]|3[0-1]))$'), bot.end_time)],
             bot.CONFIRM: [CommandHandler('confirm', bot.confirm)]
         },
-        fallbacks=[CommandHandler('cancel', bot.cancel)]
+        fallbacks=[CommandHandler('cancel', bot.cancel)],
+        conversation_timeout=30
     )
     delete_task_handler = ConversationHandler(
         entry_points=[CommandHandler('delete', bot.delete_task)],
@@ -49,7 +50,8 @@ def main() -> None:
             bot.DEL_SELECT: [CallbackQueryHandler(bot.del_select)],
             bot.DEL_CONFIRM: [CallbackQueryHandler(bot.del_confirm)],
         },
-        fallbacks=[CommandHandler('cancel', bot.cancel)]
+        fallbacks=[CommandHandler('cancel', bot.cancel)],
+        conversation_timeout=30
     )
 
     # Register application handlers
