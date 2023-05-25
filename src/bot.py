@@ -158,22 +158,22 @@ async def end_time(update: Update, context: ContextTypes) -> int:
     return CONFIRM
 
 def parse_time_notation(notation: str) -> tuple:
-    """Seperate a time notation string into its various parts."""
-    days, hours, minutes, seconds = 0
+    """Seperate a time notation string into its various units."""
+    days, hours, minutes, seconds = 0, 0, 0, 0
 
-    notation = int(notation.split(':'))
-
-    for i in len(notation):
+    notation = notation.split(':')
+    
+    for i in range(len(notation)):
         if i == 0:
-            seconds = notation[i]
+            seconds = int(notation[len(notation)-(1+i)])
         elif i == 1:
-            minutes = notation[i]
+            minutes = int(notation[len(notation)-(1+i)])
         elif i == 2:
-            hours = notation[i]
+            hours = int(notation[len(notation)-(1+i)])
         elif i == 3:
-            days = notation[i]
+            days = int(notation[len(notation)-(1+i)])
 
-    return (days, hours, minutes, seconds)  
+    return (seconds, minutes, hours, days)  
 
 async def confirm(update: Update, context: ContextTypes) -> int:
     """Add reminder to job queue and end the conversation"""
@@ -199,16 +199,14 @@ async def confirm(update: Update, context: ContextTypes) -> int:
         case "monthly":
             interval = timedelta(weeks=4)
         case _:
-            interval_hours = int(context.user_data['interval'][:2])
-            interval_minutes = int(context.user_data['interval'][3:5])
-            interval_seconds = int(context.user_data['interval'][6:])
+            interval = parse_time_notation(context.user_data['interval'])
 
-            interval = timedelta(hours=interval_hours, minutes=interval_minutes, seconds=interval_seconds)
+            interval = timedelta(days=interval[3], hours=interval[2], minutes=interval[1], seconds=interval[0])
 
     context.job_queue.run_repeating(
         remind, 
         interval,
-        first=time(hour=start[0], minute=start[1], second=start[2]),
+        first=time(hour=start[2], minute=start[1], second=start[0]),
         last=None,
         data=reminder,
         name=str(update.message.from_user.id), 
