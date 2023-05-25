@@ -114,7 +114,7 @@ async def interval(update: Update, context: ContextTypes) -> int:
     )
     return START
 
-async def start(update: Update, context: ContextTypes) -> int:
+async def start_time(update: Update, context: ContextTypes) -> int:
     """Store reminder start datetime and prompt reminder end datetime input."""
     context.user_data['start'] = update.message.text
     await context.bot.send_message(
@@ -124,7 +124,7 @@ async def start(update: Update, context: ContextTypes) -> int:
     )
     return END
 
-async def end(update: Update, context: ContextTypes) -> int:
+async def end_time(update: Update, context: ContextTypes) -> int:
     """Store reminder end datetime and ask user to confirm conversation input."""
     context.user_data['end'] = update.message.text
     await context.bot.send_message(
