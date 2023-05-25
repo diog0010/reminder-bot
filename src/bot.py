@@ -1,3 +1,4 @@
+import pytz
 from datetime import time, timedelta, datetime
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
@@ -177,6 +178,15 @@ def parse_time_notation(notation: str) -> tuple:
 
     return (seconds, minutes, hours, days)  
 
+def parse_date_notation(notation: str) -> tuple:
+    notation = notation.split('/')
+
+    year = int(notation[0])
+    month = int(notation[1])
+    day = int(notation[2])
+
+    return (year, month, day)
+
 async def confirm(update: Update, context: ContextTypes) -> int:
     """Add reminder to job queue and end the conversation"""
     reminder = {
@@ -204,15 +214,13 @@ async def confirm(update: Update, context: ContextTypes) -> int:
             interval = timedelta(days=interval[3], hours=interval[2], minutes=interval[1], seconds=interval[0])
 
     start = parse_time_notation(reminder['start'])
-
-    end_format = "%d/%m/%y %H:%M:S"
-    end = datetime.strptime(reminder['end'], end_format)
+    end = parse_date_notation(reminder['end'])
 
     context.job_queue.run_repeating(
         remind, 
         interval,
         first=time(hour=start[2], minute=start[1], second=start[0]),
-        last=end,
+        last=datetime(year=end[0], month=end[1], day=[2]),
         data=reminder,
         name=str(update.message.from_user.id), 
         chat_id=update.effective_chat.id
