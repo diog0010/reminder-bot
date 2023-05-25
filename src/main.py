@@ -29,8 +29,8 @@ def main() -> None:
             bot.TASK: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.task)],
             bot.NOTES: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.notes), CommandHandler('skip', bot.skip_notes)],
             bot.INTERVAL: [CallbackQueryHandler(bot.interval)],
-            bot.START_DATETIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.start_datetime)],
-            bot.END_DATETIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.end_datetime)], # FIX THIS
+            bot.START: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.start)],
+            bot.END: [MessageHandler(filters.TEXT & ~filters.COMMAND, bot.end)], # FIX THIS
             bot.CONFIRM: [CommandHandler('confirm', bot.confirm)]
         },
         fallbacks=[CommandHandler('cancel', bot.cancel)]

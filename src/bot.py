@@ -1,7 +1,7 @@
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
-TASK, NOTES, INTERVAL, START_DATETIME, END_DATETIME, CONFIRM = range(6)
+TASK, NOTES, INTERVAL, START, END, CONFIRM = range(6)
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
@@ -106,18 +106,18 @@ async def interval(update: Update, context: ContextTypes) -> int:
         chat_id=update.effective_chat.id,
         text="When would you like to start receiving reminders about this task?"
     )
-    return START_DATETIME
+    return START
 
-async def start_datetime(update: Update, context: ContextTypes) -> int:
+async def start(update: Update, context: ContextTypes) -> int:
     """Store reminder start datetime and prompt reminder end datetime input."""
     context.user_data['start_datetime'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="When would you like to stop receiving reminders about this task?"
     )
-    return END_DATETIME
+    return END
 
-async def end_datetime(update: Update, context: ContextTypes) -> int:
+async def end(update: Update, context: ContextTypes) -> int:
     """Store reminder end datetime and ask user to confirm conversation input."""
     context.user_data['end_datetime'] = update.message.text
     await context.bot.send_message(
