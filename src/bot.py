@@ -11,6 +11,7 @@ DEL, DEL_SELECT, DEL_CONFIRM = range(3)
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
+    context.user_data[len(context.user_data)] = {}
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=f"Hi there, <b>{update.message.from_user.username}</b>.\n\n"
@@ -52,7 +53,7 @@ async def new_task(update: Update, context: ContextTypes) -> int:
 
 async def task(update: Update, context: ContextTypes) -> int:
     """Store task name and prompt additional notes input."""
-    context.user_data['task'] = update.message.text
+    context.user_data[len(context.user_data)-1]['task'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Are there any additional notes you would like me to include in the reminder? Enter /skip to skip this step."
@@ -61,7 +62,7 @@ async def task(update: Update, context: ContextTypes) -> int:
 
 async def notes(update: Update, context: ContextTypes) -> int:
     """Store additional notes and prompt reminder interval input."""
-    context.user_data['notes'] = update.message.text
+    context.user_data[len(context.user_data)-1]['notes'] = update.message.text
     keyboard = [
         [
             InlineKeyboardButton("Hourly", callback_data="hourly"),
@@ -83,7 +84,7 @@ async def notes(update: Update, context: ContextTypes) -> int:
 
 async def skip_notes(update: Update, context: ContextTypes) -> int:
     """Skip adding additional task notes."""
-    context.user_data['notes'] = "No additional notes."
+    context.user_data[len(context.user_data)-1]['notes'] = "No additional notes."
 
     keyboard = [
         [
@@ -107,7 +108,7 @@ async def skip_notes(update: Update, context: ContextTypes) -> int:
 async def interval(update: Update, context: ContextTypes) -> int:
     """Store reminder interval and prompt reminder start datetime input."""
     query = update.callback_query
-    context.user_data['interval'] = query.data
+    context.user_data[len(context.user_data)-1]['interval'] = query.data
 
     await query.answer()
 
@@ -127,7 +128,7 @@ async def interval(update: Update, context: ContextTypes) -> int:
 
 async def custom_interval(update: Update, context: ContextTypes) -> int:
     """Store custom reminder interval and prompt reminder start datetime input."""
-    context.user_data['interval'] = update.message.text
+    context.user_data[len(context.user_data)-1]['interval'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="When would you like to start receiving reminders about this task?\n\n" 
@@ -137,14 +138,14 @@ async def custom_interval(update: Update, context: ContextTypes) -> int:
 
 async def start_time(update: Update, context: ContextTypes) -> int:
     """Store reminder start datetime and prompt reminder end datetime input."""
-    context.user_data['start'] = update.message.text
+    context.user_data[len(context.user_data)-1]['start'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="You entered the following:\n\n"
-             f"Task: {context.user_data['task']}\n"
-             f"Notes: {context.user_data['notes']}\n"
-             f"Interval: {context.user_data['interval']}\n"
-             f"Start: {context.user_data['start']}\n\n"
+             f"Task: {context.user_data[len(context.user_data)-1]['task']}\n"
+             f"Notes: {context.user_data[len(context.user_data)-1]['notes']}\n"
+             f"Interval: {context.user_data[len(context.user_data)-1]['interval']}\n"
+             f"Start: {context.user_data[len(context.user_data)-1]['start']}\n\n"
               "Enter /confirm to start receiving reminders about this task. Otherwise, enter /cancel."
     )
     return CONFIRM
@@ -194,10 +195,10 @@ def parse_time_notation(notation: str) -> tuple:
 async def confirm(update: Update, context: ContextTypes) -> int:
     """Add reminder to job queue and end the conversation"""
     reminder = {
-        "task": context.user_data['task'],
-        "notes": context.user_data['notes'],
-        "interval": context.user_data['interval'],
-        "start": context.user_data['start'],
+        "task": context.user_data[len(context.user_data)-1]['task'],
+        "notes": context.user_data[len(context.user_data)-1]['notes'],
+        "interval": context.user_data[len(context.user_data)-1]['interval'],
+        "start": context.user_data[len(context.user_data)-1]['start'],
         # "end": context.user_data['end'],
     }
 
@@ -213,7 +214,7 @@ async def confirm(update: Update, context: ContextTypes) -> int:
         case "monthly":
             interval = timedelta(weeks=4)
         case _:
-            interval = parse_time_notation(context.user_data['interval'])
+            interval = parse_time_notation(reminder['interval'])
 
             interval = timedelta(days=interval[3], hours=interval[2], minutes=interval[1], seconds=interval[0])
 
@@ -232,7 +233,7 @@ async def confirm(update: Update, context: ContextTypes) -> int:
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="You will now start receiving reminders for the following task:\n\n"
-             f"<b>{context.user_data['task']}</b>",
+             f"<b>{context.user_data[len(context.user_data)-1]['task']}</b>",
         parse_mode='HTML'
     )
     return ConversationHandler.END
@@ -298,6 +299,7 @@ async def del_confirm(update: Update, context: ContextTypes) -> int:
     for i, job in enumerate(context.job_queue.get_jobs_by_name(user_id)):
         if query.data == job.data['task']:
             job.schedule_removal()
+            del context.user_data[i]
             break
 
     await context.bot.send_message(
