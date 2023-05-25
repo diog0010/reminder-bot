@@ -2,7 +2,7 @@ from datetime import time, timedelta
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
-TASK, NOTES, INTERVAL, CUSTOM_INTERVAL, START, END, CONFIRM = range(6)
+TASK, NOTES, INTERVAL, CUSTOM_INTERVAL, START, END, CONFIRM = range(7)
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
