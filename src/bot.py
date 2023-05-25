@@ -157,11 +157,27 @@ async def end_time(update: Update, context: ContextTypes) -> int:
     )
     return CONFIRM
 
+def parse_time_notation(notation: str) -> tuple:
+    """Seperate a time notation string into its various parts."""
+    days, hours, minutes, seconds = 0
+
+    notation = int(notation.split(':'))
+
+    for i in len(notation):
+        if i == 0:
+            seconds = notation[i]
+        elif i == 1:
+            minutes = notation[i]
+        elif i == 2:
+            hours = notation[i]
+        elif i == 3:
+            days = notation[i]
+
+    return (days, hours, minutes, seconds)  
+
 async def confirm(update: Update, context: ContextTypes) -> int:
     """Add reminder to job queue and end the conversation"""
-    start_hour = int(context.user_data['start'][:2])
-    start_minute = int(context.user_data['start'][3:5])
-    start_second = int(context.user_data['start'][6:])
+    start = parse_time_notation(context.user_data['start'])
 
     reminder = {
         "task": context.user_data['task'],
@@ -192,7 +208,7 @@ async def confirm(update: Update, context: ContextTypes) -> int:
     context.job_queue.run_repeating(
         remind, 
         interval,
-        first=time(hour=start_hour, minute=start_minute, second=start_second),
+        first=time(hour=start[0], minute=start[1], second=start[2]),
         last=None,
         data=reminder,
         name=str(update.message.from_user.id), 
