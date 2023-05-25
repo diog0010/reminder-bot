@@ -110,7 +110,7 @@ async def interval(update: Update, context: ContextTypes) -> int:
 
 async def start(update: Update, context: ContextTypes) -> int:
     """Store reminder start datetime and prompt reminder end datetime input."""
-    context.user_data['start_datetime'] = update.message.text
+    context.user_data['start'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="When would you like to stop receiving reminders about this task?"
@@ -119,15 +119,15 @@ async def start(update: Update, context: ContextTypes) -> int:
 
 async def end(update: Update, context: ContextTypes) -> int:
     """Store reminder end datetime and ask user to confirm conversation input."""
-    context.user_data['end_datetime'] = update.message.text
+    context.user_data['end'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="You entered the following:\n\n"
              f"Task: {context.user_data['task']}\n"
              f"Notes: {context.user_data['notes']}\n"
              f"Interval: {context.user_data['interval']}\n"
-             f"Start: {context.user_data['start_datetime']}\n"
-             f"End: {context.user_data['end_datetime']}\n\n"
+             f"Start: {context.user_data['start']}\n"
+             f"End: {context.user_data['end']}\n\n"
               "Enter /confirm to start receiving reminders about this task. Otherwise, enter /cancel."
     )
     return CONFIRM
@@ -138,8 +138,8 @@ async def confirm(update: Update, context: ContextTypes) -> int:
         "task": context.user_data['task'],
         "notes": context.user_data['notes'],
         "interval": context.user_data['interval'],
-        "start_datetime": context.user_data['start_datetime'],
-        "end_datetime": context.user_data['end_datetime'],
+        "start": context.user_data['start'],
+        "end": context.user_data['end'],
     }
     context.job_queue.run_repeating(
         remind, 
