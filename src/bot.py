@@ -177,8 +177,6 @@ def parse_time_notation(notation: str) -> tuple:
 
 async def confirm(update: Update, context: ContextTypes) -> int:
     """Add reminder to job queue and end the conversation"""
-    start = parse_time_notation(context.user_data['start'])
-
     reminder = {
         "task": context.user_data['task'],
         "notes": context.user_data['notes'],
@@ -202,6 +200,8 @@ async def confirm(update: Update, context: ContextTypes) -> int:
             interval = parse_time_notation(context.user_data['interval'])
 
             interval = timedelta(days=interval[3], hours=interval[2], minutes=interval[1], seconds=interval[0])
+
+    start = parse_time_notation(reminder['start'])
 
     context.job_queue.run_repeating(
         remind, 
