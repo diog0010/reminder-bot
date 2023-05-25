@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import time, timedelta
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -152,9 +152,25 @@ async def confirm(update: Update, context: ContextTypes) -> int:
         "start": context.user_data['start'],
         "end": context.user_data['end'],
     }
+
+    interval = 0
+
+    match reminder['interval']:
+        case "hourly":
+            interval = timedelta(hours=1)
+        case "daily":
+            interval = timedelta(days=1)
+        case "weekly":
+            interval = timedelta(weeks=1)
+        case "monthly":
+            interval = timedelta(weeks=4)
+        case _:
+            interval = timedelta(seconds=10) # TEMPORARY
+
+
     context.job_queue.run_repeating(
         remind, 
-        5,
+        interval,
         first=time(hour=start_hour, minute=start_minute, second=start_second),
         last=None,
         data=reminder,
