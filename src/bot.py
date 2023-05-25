@@ -27,11 +27,12 @@ async def help(update: Update, context: ContextTypes) -> None:
 
 async def remind(context: ContextTypes) -> None:
     """Send a reminder message."""
+    job = context.job
     await context.bot.send_message(
         chat_id=context.job.chat_id, 
         text=f"This is a message to remind you of the following task:\n\n"
-             f"<b>{context.user_data['task']}</b>\n"
-             f"<i>{context.user_data['notes']}</i>\n\n"
+             f"<b>{job.data['task']}</b>\n"
+             f"<i>{job.data['notes']}</i>\n\n"
              f"Don't forget!",
         parse_mode='HTML'
     )
@@ -96,11 +97,17 @@ async def end_datetime(update: Update, context: ContextTypes) -> int:
 
 async def confirm(update: Update, context: ContextTypes) -> int:
     """Add reminder to job queue and end the conversation"""
+    reminder = {
+        "task": context.user_data['task'],
+        "notes": context.user_data['notes'],
+        "interval": context.user_data['interval'],
+        "end_datetime": context.user_data['end_datetime'],
+    }
     context.job_queue.run_repeating(
         remind, 
         5, 
         last=15,
-        data=context.user_data['task'],
+        data=reminder,
         name=str(update.message.from_user.id), 
         chat_id=update.effective_chat.id,
         user_id=update.message.from_user.id
@@ -134,7 +141,7 @@ async def list_tasks(update: Update, context: ContextTypes) -> None:
     user_id = str(update.message.from_user.id)
 
     for i, job in enumerate(context.job_queue.get_jobs_by_name(user_id)):
-        tasks += f"{i+1}. {job.data}\n"
+        tasks += f"{i+1}. {job.data['task']}\n"
         i += 1
     
     if tasks == "":
