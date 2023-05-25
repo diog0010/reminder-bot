@@ -101,7 +101,7 @@ async def skip_notes(update: Update, context: ContextTypes) -> int:
 
 async def interval(update: Update, context: ContextTypes) -> int:
     """Store reminder interval and prompt reminder start datetime input."""
-    context.user_data['interval'] = update.message.text
+    context.user_data['interval'] = update.callback_query
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="When would you like to start receiving reminders about this task?"
