@@ -2,8 +2,11 @@ from datetime import time, timedelta
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
-# Initialize new task constants
+# Initialize new_task constants
 TASK, NOTES, INTERVAL, CUSTOM_INTERVAL, START, END, CONFIRM = range(7)
+
+# Initialize delete_task constants
+DEL, DEL_SELECT, DEL_CONFIRM = range(3)
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Display a startup message."""
@@ -232,8 +235,67 @@ async def cancel(update: Update, context: ContextTypes) -> int:
 async def edit_task(update: Update, context: ContextTypes) -> None:
     """Edit an existing task."""
 
-async def delete_task(update: Update, context: ContextTypes) -> None:
-    """Delete an existing task."""
+async def delete_task(update: Update, context: ContextTypes) -> int:
+    """List all active tasks and prompt user to select task to be deleted."""
+    user_id = str(update.message.from_user.id)
+
+    keyboard = []
+    for i, job in enumerate(context.job_queue.get_jobs_by_name(user_id)):
+        keyboard.append([InlineKeyboardButton(f"{i+1}. {job.data['task']}", callback_data=job.data['task'])])
+
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Which task would you like to delete?",
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+    return DEL_SELECT
+
+async def del_select(update: Update, context: ContextTypes) -> int:
+    """Prompt user to confirm deletion selection."""
+    query = update.callback_query
+
+    await query.answer()
+
+    keyboard = [
+        [
+            InlineKeyboardButton("Yes", callback_data=query.data),
+            InlineKeyboardButton("No", callback_data="no")
+        ]
+    ]
+
+    await query.edit_message_text(
+        text="Are you sure you want to delete the following task?\n\n"
+             f"{query.data}",
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+    return DEL_CONFIRM
+
+async def del_confirm(update: Update, context: ContextTypes) -> int:
+    """Delete a task and end the conversation."""
+    query = update.callback_query
+
+    await query.answer()
+
+    if query.data == "no":
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Deletion cancelled.",
+        )
+        return ConversationHandler.END
+
+    user_id = str(query.from_user.id)
+
+    for i, job in enumerate(context.job_queue.get_jobs_by_name(user_id)):
+        if query.data == job.data['task']:
+            job.schedule_removal()
+            break
+
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Task deleted.",
+    )
+
+    return ConversationHandler.END
 
 async def list_tasks(update: Update, context: ContextTypes) -> None:
     """Display a user's tasks."""

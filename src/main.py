@@ -43,12 +43,21 @@ def main() -> None:
         },
         fallbacks=[CommandHandler('cancel', bot.cancel)]
     )
+    delete_task_handler = ConversationHandler(
+        entry_points=[CommandHandler('delete', bot.delete_task)],
+        states={
+            bot.DEL_SELECT: [CallbackQueryHandler(bot.del_select)],
+            bot.DEL_CONFIRM: [CallbackQueryHandler(bot.del_confirm)],
+        },
+        fallbacks=[CommandHandler('cancel', bot.cancel)]
+    )
 
     # Register application handlers
     application.add_handler(start_handler)
     application.add_handler(help_handler)
     application.add_handler(list_handler)
     application.add_handler(new_task_handler)
+    application.add_handler(delete_task_handler)
 
     # Notify users of invalid command entry
     unknown_handler = MessageHandler(filters.COMMAND, bot.unknown)
