@@ -2,6 +2,7 @@ from datetime import time, timedelta
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
+# Initialize new task constants
 TASK, NOTES, INTERVAL, CUSTOM_INTERVAL, START, END, CONFIRM = range(7)
 
 async def start(update: Update, context: ContextTypes) -> None:
