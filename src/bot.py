@@ -108,7 +108,8 @@ async def interval(update: Update, context: ContextTypes) -> int:
 
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="When would you like to start receiving reminders about this task?"
+        text="When would you like to start receiving reminders about this task?\n\n" 
+             "Please use 24 hour notation (i.e. hh:mm:ss)"
     )
     return START
 
@@ -117,7 +118,8 @@ async def start(update: Update, context: ContextTypes) -> int:
     context.user_data['start'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="When would you like to stop receiving reminders about this task?"
+        text="When would you like to stop receiving reminders about this task?\n\n"
+             "Please use 24 hour notation (i.e. hh:mm:ss)"
     )
     return END
 
