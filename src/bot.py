@@ -140,25 +140,29 @@ async def start_time(update: Update, context: ContextTypes) -> int:
     context.user_data['start'] = update.message.text
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="What date would you like to stop receiving reminders about this task?\n\n"
-             "Reply using the following format: YYYY/MM/DD"
-    )
-    return END
-
-async def end_time(update: Update, context: ContextTypes) -> int:
-    """Store reminder end datetime and ask user to confirm conversation input."""
-    context.user_data['end'] = update.message.text
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id,
         text="You entered the following:\n\n"
              f"Task: {context.user_data['task']}\n"
              f"Notes: {context.user_data['notes']}\n"
              f"Interval: {context.user_data['interval']}\n"
-             f"Start: {context.user_data['start']}\n"
-             f"End: {context.user_data['end']}\n\n"
+             f"Start: {context.user_data['start']}\n\n"
               "Enter /confirm to start receiving reminders about this task. Otherwise, enter /cancel."
     )
     return CONFIRM
+
+# async def end_time(update: Update, context: ContextTypes) -> int:
+#     """Store reminder end datetime and ask user to confirm conversation input."""
+#     context.user_data['end'] = update.message.text
+#     await context.bot.send_message(
+#         chat_id=update.effective_chat.id,
+#         text="You entered the following:\n\n"
+#              f"Task: {context.user_data['task']}\n"
+#              f"Notes: {context.user_data['notes']}\n"
+#              f"Interval: {context.user_data['interval']}\n"
+#              f"Start: {context.user_data['start']}\n"
+#              f"End: {context.user_data['end']}\n\n"
+#               "Enter /confirm to start receiving reminders about this task. Otherwise, enter /cancel."
+#     )
+#     return CONFIRM
 
 def parse_time_notation(notation: str) -> tuple:
     """Separate a time notation string into its various units."""
@@ -178,14 +182,14 @@ def parse_time_notation(notation: str) -> tuple:
 
     return (seconds, minutes, hours, days)  
 
-def parse_date_notation(notation: str) -> tuple:
-    notation = notation.split('/')
+# def parse_date_notation(notation: str) -> tuple:
+#     notation = notation.split('/')
 
-    year = int(notation[0])
-    month = int(notation[1])
-    day = int(notation[2])
+#     year = int(notation[0])
+#     month = int(notation[1])
+#     day = int(notation[2])
 
-    return (year, month, day)
+#     return (year, month, day)
 
 async def confirm(update: Update, context: ContextTypes) -> int:
     """Add reminder to job queue and end the conversation"""
@@ -194,7 +198,7 @@ async def confirm(update: Update, context: ContextTypes) -> int:
         "notes": context.user_data['notes'],
         "interval": context.user_data['interval'],
         "start": context.user_data['start'],
-        "end": context.user_data['end'],
+        # "end": context.user_data['end'],
     }
 
     interval = 0
@@ -214,13 +218,13 @@ async def confirm(update: Update, context: ContextTypes) -> int:
             interval = timedelta(days=interval[3], hours=interval[2], minutes=interval[1], seconds=interval[0])
 
     start = parse_time_notation(reminder['start'])
-    end = parse_date_notation(reminder['end'])
+    # end = parse_date_notation(reminder['end'])
 
     context.job_queue.run_repeating(
         remind, 
         interval,
         first=time(hour=start[2], minute=start[1], second=start[0]),
-        last=datetime(year=end[0], month=end[1], day=[2]),
+        # last=datetime(year=end[0], month=end[1], day=[2]),
         data=reminder,
         name=str(update.message.from_user.id), 
         chat_id=update.effective_chat.id
