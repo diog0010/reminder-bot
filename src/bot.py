@@ -160,7 +160,7 @@ async def end_time(update: Update, context: ContextTypes) -> int:
     return CONFIRM
 
 def parse_time_notation(notation: str) -> tuple:
-    """Seperate a time notation string into its various units."""
+    """Separate a time notation string into its various units."""
     days, hours, minutes, seconds = 0, 0, 0, 0
 
     notation = notation.split(':')
