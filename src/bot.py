@@ -1,3 +1,4 @@
+from datetime import time
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -140,6 +141,10 @@ async def end(update: Update, context: ContextTypes) -> int:
 
 async def confirm(update: Update, context: ContextTypes) -> int:
     """Add reminder to job queue and end the conversation"""
+    start_hour = int(context.user_data['start'][:2])
+    start_minute = int(context.user_data['start'][3:5])
+    start_second = int(context.user_data['start'][6:])
+
     reminder = {
         "task": context.user_data['task'],
         "notes": context.user_data['notes'],
@@ -149,8 +154,9 @@ async def confirm(update: Update, context: ContextTypes) -> int:
     }
     context.job_queue.run_repeating(
         remind, 
-        5, 
-        last=15,
+        5,
+        first=time(hour=start_hour, minute=start_minute, second=start_second),
+        last=None,
         data=reminder,
         name=str(update.message.from_user.id), 
         chat_id=update.effective_chat.id

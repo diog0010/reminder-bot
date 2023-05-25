@@ -1,6 +1,6 @@
-import os, logging, bot
+import os, logging, bot, pytz
 from dotenv import load_dotenv
-from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, ConversationHandler, filters, CallbackQueryHandler
+from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, ConversationHandler, filters, CallbackQueryHandler, Defaults
 
 # Get bot authentication token from environment
 load_dotenv()
@@ -14,8 +14,10 @@ logging.basicConfig(
 
 def main() -> None:
     """Start the bot."""
+    defaults = Defaults(tzinfo=pytz.timezone('US/Eastern'))
+
     # Create the application and pass it the authentication token
-    application = ApplicationBuilder().token(token).build()
+    application = ApplicationBuilder().token(token).defaults(defaults).build()
 
     # Initialize command handlers
     start_handler = CommandHandler('start', bot.start)
